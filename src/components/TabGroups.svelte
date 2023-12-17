@@ -22,7 +22,7 @@
         })
     }
 
-    export async function saveGroups() {
+    export async function saveTabGroups() {
         let tabs = await chrome.tabs.query({});
         let groupedTabs = groupBy(tabs, t => t.groupId);
         for (let groupId in groupedTabs) {
@@ -50,7 +50,7 @@
         })
     }
 
-    export function clearGroups() {
+    export function clearTabGroups() {
         chrome.storage.sync.clear();
     }
 
