@@ -4,6 +4,8 @@
     import { type Tab, type TabGroup, TabGroupColours, Colours } from "../types/tabs.type";
 
     let groups: TabGroup[] = [];
+    let numExpandedGroups: number = 0;
+    $: expandedGroups = () => numExpandedGroups;
 
     chrome.storage.onChanged.addListener((changes, namespace) => {
         if (changes.trove.newValue) {
@@ -25,7 +27,11 @@
     }
 
     function expandTabGroup(group: TabGroup) {
-        debugger;
+        if (group.expanded) {
+            numExpandedGroups--;
+        } else {
+            numExpandedGroups++;
+        }
         group.expanded = !group.expanded;
     }
 
@@ -55,7 +61,7 @@
             newGroups.push(tabGroup);
         }
         
-        let groups = newGroups;
+        groups = newGroups;
         chrome.storage.sync.set({
             trove: {
                 groups: newGroups,
@@ -70,22 +76,24 @@
     getGroupsFromStorage();
 </script>
 
-<div class="my-2">
+<div class="my-4">
     {#each groups as group}
-    <div class="px-4 py-1">
+    <div class="px-4">
         <button on:click={() => expandTabGroup(group)} class="flex flex-row justify-between {Colours[group.colour]} w-10/12 border rounded-lg border-slate-900 shadow-slate-900 shadow transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 duration-300">
             <h2 class="mx-2 font-bold text-slate-900">{group.name}</h2>
             <h3 class="mx-2 font-bold text-slate-900">{group.tabs.length} tabs</h3>
         </button>
         <ul class="gap-2 mx-4 my-2">
-            {#each group.tabs as tab}
-                {#if group.expanded}
-                <li class="flex flex-row mb-2 gap-2 underline underline-offset-4">
-                    <img src={tab.faviconUrl} alt="tab favicon" class="w-4 h-4"/>
-                    <p>{tab.title}</p>
-                </li>
-                {/if}
-            {/each}
+            {#key numExpandedGroups}
+                {#each group.tabs as tab}
+                    {#if group.expanded}
+                    <li class="flex flex-row mb-2 gap-2 underline underline-offset-4">
+                        <img src={tab.faviconUrl} alt="tab favicon" class="w-4 h-4"/>
+                        <p>{tab.title}</p>
+                    </li>
+                    {/if}
+                {/each}
+            {/key}
         </ul>
     </div>
     {/each}
