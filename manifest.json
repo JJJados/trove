@@ -1,0 +1,10 @@
+{
+    "name": "trove",
+    "description": "tab manager",
+    "version": "1.0",
+    "manifest_version": 3,
+    "action": {
+      "default_popup": "src/index.html"
+    },
+    "permissions": ["storage"]
+  }
