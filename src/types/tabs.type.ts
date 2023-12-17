@@ -1,6 +1,8 @@
 export type Tab = {
   active: boolean;
+  title: string;
   url: string;
+  faviconUrl: string;
 };
 
 export type TabGroup = {
@@ -12,14 +14,14 @@ export type TabGroup = {
 
 export enum Colours {
   grey = "bg-group-grey",
-  blue = "#1a73e8",
-  green = "#0f9d58",
-  red = "#db4437",
-  yellow = "#f4b400",
-  orange = "#fbbc04",
-  purple = "#ab47bc",
-  pink = "#e91e63",
-  cyan = "#00acc1",
+  blue = "bg-group-blue",
+  green = "bg-group-green",
+  red = "bg-group-red",
+  yellow = "bg-group-yellow",
+  orange = "bg-group-orange",
+  purple = "bg-group-purple",
+  pink = "bg-group-pink",
+  cyan = "bg-group-cyan",
 }
 
 export enum TabGroupColours {
