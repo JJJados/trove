@@ -1,11 +1,11 @@
 import "./app.css";
-import tabs from "./components/tabs.svelte";
+import popup from "./components/Popup.svelte";
 
 const target = document.getElementById("app");
 
 async function render() {
   if (target) {
-    new tabs({ target });
+    new popup({ target });
   }
 }
 

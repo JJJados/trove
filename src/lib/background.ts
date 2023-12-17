@@ -1,12 +1,13 @@
 import { type Tab, type TabGroup, TabGroupColours } from "../types/tabs.type";
 
 chrome.runtime.onStartup.addListener(async () => {
-  let troveGroups: TabGroup[] = await setupTroveStorage();
-  await createDefaultTabGroup();
-  await createTroveGroups(troveGroups);
+  let groups: TabGroup[] = await setupStorage();
+  // need to figure out a way to display these correctly, this works for creating the group
+  // await createDefaultTabGroup();
+  await createTabGroups(groups);
 });
 
-function setupTroveStorage(): Promise<TabGroup[]> {
+function setupStorage(): Promise<TabGroup[]> {
   return new Promise((resolve) => {
     chrome.storage.sync.get("trove", (res) => {
       let groups: TabGroup[] = [];
@@ -37,7 +38,7 @@ async function createDefaultTabGroup() {
   });
 }
 
-async function createTroveGroups(groups: TabGroup[]) {
+async function createTabGroups(groups: TabGroup[]) {
   for (let group of groups) {
     let tabIds: number[] = [];
     for (let tab of group.tabs) {

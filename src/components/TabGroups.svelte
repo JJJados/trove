@@ -22,7 +22,7 @@
         })
     }
 
-    async function saveGroups() {
+    export async function saveGroups() {
         let tabs = await chrome.tabs.query({});
         let groupedTabs = groupBy(tabs, t => t.groupId);
         for (let groupId in groupedTabs) {
@@ -50,33 +50,26 @@
         })
     }
 
-    function clearGroups() {
+    export function clearGroups() {
         chrome.storage.sync.clear();
     }
 
     getGroupsFromStorage();
 </script>
 
-<div class="flex flex-col w-64 h-auto" >
-    <div class="flex flex-row justify-between px-2 py-2 border-b-2 border-black">
-        <h1 class="text-xl">* trove</h1>
-        <button on:click={saveGroups} class="border-red-800 border">Save groups</button>
-        <button on:click={clearGroups} class="border-red-800 border">Clear groups</button>
-    </div>
-    <div class="h-48">
-        {#each groups as group}
-        <div class="px-2 py-2">
-            <div class="{Colours[group.colour]} w-2/3 border rounded">
-                <h2 class="text-xl mx-2">{group.name}</h2>
-            </div>
-            <div class="gap-4 mx-8 my-2">
-                {#each group.tabs as tab}
-                    <div>
-                        <p>{tab.url}</p>
-                    </div>
-                {/each}
-            </div>
+<div class="h-48">
+    {#each groups as group}
+    <div class="px-2 py-2">
+        <div class="{Colours[group.colour]} w-2/3 border rounded">
+            <h2 class="text-xl mx-2">{group.name}</h2>
         </div>
-        {/each}
+        <div class="gap-4 mx-8 my-2">
+            {#each group.tabs as tab}
+                <div>
+                    <p>{tab.url}</p>
+                </div>
+            {/each}
+        </div>
     </div>
+    {/each}
 </div>
