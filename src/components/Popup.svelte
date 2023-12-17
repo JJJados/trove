@@ -4,10 +4,16 @@
 </script>
 
 <div class="flex flex-col w-64 h-auto bg-white text-slate-900 dark:bg-dark dark:text-white" >
-    <div class="flex flex-row justify-between px-2 py-2 border-b-2 border-black">
-        <h1 class="text-xl">* trove</h1>
-        <button on:click={() => { tabGroups.saveTabGroups() }} class="border-red-800 border">Save groups</button>
-        <button on:click={() => { tabGroups.clearTabGroups() }} class="border-red-800 border">Clear groups</button>
+    <div class="flex flex-row justify-between px-4 py-2 border-b-2 border-white border-opacity-10">
+        <h1 class="text-xl">trove</h1>
     </div>
     <TabGroups bind:this={tabGroups}/>
+    <div class="flex flex-row py-2 px-4 gap-1">
+        <button on:click={() => { tabGroups.saveTabGroups() }}>
+            <img src="../save-white.svg" alt="save" class="w-6 h-6"/>
+        </button>
+        <button on:click={() => { tabGroups.clearTabGroups() }}>
+            <img src="../delete-white.svg" alt="save" class="w-6 h-6"/>
+        </button>
+    </div>
 </div>

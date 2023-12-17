@@ -79,7 +79,7 @@
 <div class="my-4">
     {#each groups as group}
     <div class="px-4">
-        <button on:click={() => expandTabGroup(group)} class="flex flex-row justify-between {Colours[group.colour]} w-10/12 border rounded-lg border-slate-900 shadow-slate-900 shadow transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 duration-300">
+        <button on:click={() => expandTabGroup(group)} class="flex flex-row justify-between {Colours[group.colour]} w-9/12 border rounded-lg border-slate-900 shadow-slate-900 shadow transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 duration-300">
             <h2 class="mx-2 font-bold text-slate-900">{group.name}</h2>
             <h3 class="mx-2 font-bold text-slate-900">{group.tabs.length} tabs</h3>
         </button>
