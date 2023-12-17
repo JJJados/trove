@@ -10,6 +10,8 @@ export type TabGroup = {
   name: string;
   colour: TabGroupColours;
   tabs: Tab[];
+  // Flags the list of tabs in the popout
+  expanded: boolean;
 };
 
 export enum Colours {

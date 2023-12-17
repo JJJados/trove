@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { MouseEventHandler } from "svelte/elements";
     import groupBy from "../lib/groupBy";
     import { type Tab, type TabGroup, TabGroupColours, Colours } from "../types/tabs.type";
 
@@ -23,6 +24,11 @@
         })
     }
 
+    function expandTabGroup(group: TabGroup) {
+        debugger;
+        group.expanded = !group.expanded;
+    }
+
     export async function saveTabGroups() {
         let tabs = await chrome.tabs.query({});
         let groupedTabs = groupBy(tabs, t => t.groupId);
@@ -36,8 +42,8 @@
                 collapsed: group.collapsed,
                 name: group.title as string,
                 colour: TabGroupColours[group.color],
+                expanded: false,
                 tabs: groupedTabs[groupId].map(t => {
-                    console.log(t)
                     return {
                         active: t.active,
                         title: t.title as string,
@@ -67,16 +73,18 @@
 <div class="my-2">
     {#each groups as group}
     <div class="px-4 py-1">
-        <div class="flex flex-row justify-between {Colours[group.colour]} w-9/12 border rounded-lg border-slate-900 shadow-slate-900 shadow">
+        <button on:click={() => expandTabGroup(group)} class="flex flex-row justify-between {Colours[group.colour]} w-10/12 border rounded-lg border-slate-900 shadow-slate-900 shadow transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 duration-300">
             <h2 class="mx-2 font-bold text-slate-900">{group.name}</h2>
             <h3 class="mx-2 font-bold text-slate-900">{group.tabs.length} tabs</h3>
-        </div>
+        </button>
         <ul class="gap-2 mx-4 my-2">
             {#each group.tabs as tab}
+                {#if group.expanded}
                 <li class="flex flex-row mb-2 gap-2 underline underline-offset-4">
                     <img src={tab.faviconUrl} alt="tab favicon" class="w-4 h-4"/>
                     <p>{tab.title}</p>
                 </li>
+                {/if}
             {/each}
         </ul>
     </div>
