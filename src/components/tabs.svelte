@@ -1,9 +1,8 @@
 <script lang="ts">
+    import groupBy from "../lib/groupBy";
     import { type Tab, type TabGroup, TabGroupColours, Colours } from "../types/tabs.type";
+
     let groups: TabGroup[] = [];
-    let newGroupName: string = "";
-    let newGroupColour: TabGroupColours = TabGroupColours.grey;
-    let newTabUrl: string = "";
 
     chrome.storage.onChanged.addListener((changes, namespace) => {
         if (changes.trove.newValue) {
@@ -13,23 +12,7 @@
         }
     });
 
-    function newTabGroup () {
-
-        let newGroup: TabGroup = {
-            collapsed: false,
-            name: newGroupName,
-            colour: newGroupColour,
-            tabs: [{active: false, url: newTabUrl}]
-        }
-        groups.push(newGroup);
-        chrome.storage.sync.set({
-            trove: {
-                groups: groups,
-            }
-        })
-    }
-
-    function getTroveStorage() {
+    function getGroupsFromStorage() {
         chrome.storage.sync.get("trove", (res) => {
             if (res.trove) {
                 groups = res.trove.groups;
@@ -39,46 +22,54 @@
         })
     }
 
-    async function createTroveGroups(groups: TabGroup[]) {
-        for (let group of groups) {
-            let tabIds: number[] = [];
-            for (let tab of group.tabs) {
-            let t = await chrome.tabs.create({ active: tab.active, url: tab.url });
-            tabIds.push(t.id as number);
+    async function saveGroups() {
+        let tabs = await chrome.tabs.query({});
+        let groupedTabs = groupBy(tabs, t => t.groupId);
+        for (let groupId in groupedTabs) {
+            if (groupId === "-1") {
+                continue;
             }
-            let groupId: number = await chrome.tabs.group({ tabIds: tabIds });
-            chrome.tabGroups.update(groupId, {
-            collapsed: false,
-            title: group.name,
-            color: group.colour,
-            });
+            let group = await chrome.tabGroups.get(Number(groupId));
+            let tabGroup: TabGroup = {
+                collapsed: group.collapsed,
+                name: group.title as string,
+                colour: TabGroupColours[group.color],
+                tabs: groupedTabs[groupId].map(t => {
+                    return {
+                        active: t.active,
+                        url: t.url as string
+                    }
+                })
+            }
+            groups.push(tabGroup);
         }
+        chrome.storage.sync.set({
+            trove: {
+                groups: groups,
+            }
+        })
     }
 
-    function clearTroveStorage() {
+    function clearGroups() {
         chrome.storage.sync.clear();
     }
 
-    getTroveStorage();
+    getGroupsFromStorage();
 </script>
 
-<div class="flex flex-col">
-    <h1>trove</h1>
-    <input type="text" placeholder="New Group Name" bind:value={newGroupName} />
-    <div>
-        <input type="radio" id="redGroup" bind:value={newGroupColour}/>
-        <label for="redGroup">Grey</label>
+<div class="flex flex-col w-64 h-auto" >
+    <div class="flex flex-row justify-between px-2 py-2 border-b-2 border-black">
+        <h1 class="text-xl">* trove</h1>
+        <button on:click={saveGroups} class="border-red-800 border">Save groups</button>
+        <button on:click={clearGroups} class="border-red-800 border">Clear groups</button>
     </div>
-    <input type="text" placeholder="New Tab URL" bind:value={newTabUrl}/>
-    <button on:click={newTabGroup} class="border-red-800 border">Add a new tab group</button>
-    <button on:click={getTroveStorage} class="border-red-800 border">Get trove storage</button>
-    <button on:click={async () => createTroveGroups(groups)} class="border-red-800 border">create trove storage</button>
-    <button on:click={clearTroveStorage} class="border-red-800 border">Clear trove storage</button>
-    {#each groups as group}
-        <div class="{Colours[group.colour]}">
-            <h2>{group.name}</h2>
-            <h2>{Colours[group.colour]}</h2>
-            <div>
+    <div class="h-48">
+        {#each groups as group}
+        <div class="px-2 py-2">
+            <div class="{Colours[group.colour]} w-2/3 border rounded">
+                <h2 class="text-xl mx-2">{group.name}</h2>
+            </div>
+            <div class="gap-4 mx-8 my-2">
                 {#each group.tabs as tab}
                     <div>
                         <p>{tab.url}</p>
@@ -86,5 +77,6 @@
                 {/each}
             </div>
         </div>
-    {/each}
+        {/each}
+    </div>
 </div>
