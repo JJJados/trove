@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { type Tab, type TabGroup, TabGroupColours } from "../types/tabs.type";
+    import { type Tab, type TabGroup, TabGroupColours, Colours } from "../types/tabs.type";
     let groups: TabGroup[] = [];
     let newGroupName: string = "";
     let newGroupColour: TabGroupColours = TabGroupColours.grey;
@@ -75,8 +75,9 @@
     <button on:click={async () => createTroveGroups(groups)} class="border-red-800 border">create trove storage</button>
     <button on:click={clearTroveStorage} class="border-red-800 border">Clear trove storage</button>
     {#each groups as group}
-        <div>
+        <div class="{Colours[group.colour]}">
             <h2>{group.name}</h2>
+            <h2>{Colours[group.colour]}</h2>
             <div>
                 {#each group.tabs as tab}
                     <div>

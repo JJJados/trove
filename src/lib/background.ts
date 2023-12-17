@@ -45,7 +45,6 @@ async function createTroveGroups(groups: TabGroup[]) {
       tabIds.push(t.id as number);
     }
     let groupId: number = await chrome.tabs.group({ tabIds: tabIds });
-    console.log(group);
     chrome.tabGroups.update(groupId, {
       collapsed: false,
       title: group.name,

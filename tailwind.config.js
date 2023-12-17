@@ -2,7 +2,11 @@
 export default {
   content: ["./src/**/*.{html,js,svelte,ts}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "group-grey": "#F5F5F5",
+      }
+    },
   },
   plugins: [],
 }
