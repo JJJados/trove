@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { slide } from 'svelte/transition';
 	import groupBy from '../lib/groupBy';
 	import { type Tab, type TabGroup, TabGroupColours, Colours } from '../types/tabs.type';
 
@@ -18,9 +19,6 @@
 		chrome.storage.sync.get('trove', (res) => {
 			if (res.trove) {
 				groups = res.trove.groups;
-			} else {
-				// Should handle this better ie. banner displaying restart Chrome
-				throw new Error('No trove storage found');
 			}
 		});
 	}
@@ -85,7 +83,7 @@
 				on:click={() => expandTabGroup(group)}
 				class="flex flex-row justify-between {Colours[
 					group.colour
-				]} w-9/12 border rounded-lg border-slate-900 shadow-slate-900 shadow transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 duration-300"
+				]} w-full border rounded-lg border-slate-900 shadow-slate-900 shadow transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 duration-300"
 			>
 				<h2 class="mx-2 font-bold text-slate-900">{group.name}</h2>
 				<h3 class="mx-2 font-bold text-slate-900">{group.tabs.length}</h3>
@@ -95,7 +93,7 @@
 					{#if group.expanded}
 						<ul class="gap-2 my-2">
 							{#each group.tabs as tab}
-								<li class="flex flex-row mb-2 gap-2 underline underline-offset-4">
+								<li class="flex flex-row mb-2 gap-2 hover:underline underline-offset-4">
 									<img src={tab.faviconUrl} alt="tab favicon" class="w-4 h-4" />
 									<p>{tab.title}</p>
 								</li>

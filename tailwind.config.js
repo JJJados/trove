@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        "dark": "#121212",
+        "dark": "#262626",
         "group-text": "#202124",
         "group-grey": "#dadce0",
         "group-red": "#f28b82",
