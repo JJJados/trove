@@ -75,7 +75,7 @@
 
 <div class="my-4 px-4">
 	{#if groups.length === 0}
-		<h1>No tab groups saved.</h1>
+		<h1>No groups saved.</h1>
 	{/if}
 	{#each groups as group}
 		<div>
