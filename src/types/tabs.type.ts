@@ -1,4 +1,5 @@
 export type Tab = {
+	id: number;
 	active: boolean;
 	title: string;
 	url: string;
@@ -6,6 +7,7 @@ export type Tab = {
 };
 
 export type TabGroup = {
+	id: number;
 	collapsed: boolean;
 	name: string;
 	colour: TabGroupColours;

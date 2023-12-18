@@ -32,6 +32,10 @@
 		group.expanded = !group.expanded;
 	}
 
+	function setActiveLink(tab: Tab) {
+		chrome.tabs.update(tab.id, { active: true });
+	}
+
 	export async function saveTabGroups() {
 		let tabs = await chrome.tabs.query({});
 		let groupedTabs = groupBy(tabs, (t) => t.groupId);
@@ -42,12 +46,14 @@
 			}
 			let group = await chrome.tabGroups.get(Number(groupId));
 			let tabGroup: TabGroup = {
+				id: group.id,
 				collapsed: group.collapsed,
 				name: group.title as string,
 				colour: TabGroupColours[group.color],
 				expanded: false,
 				tabs: groupedTabs[groupId].map((t) => {
 					return {
+						id: t.id as number,
 						active: t.active,
 						title: t.title as string,
 						url: t.url as string,
@@ -93,10 +99,16 @@
 					{#if group.expanded}
 						<ul class="gap-2 my-2">
 							{#each group.tabs as tab}
-								<li class="flex flex-row mb-2 gap-2 hover:underline underline-offset-4">
-									<img src={tab.faviconUrl} alt="tab favicon" class="w-4 h-4" />
-									<p>{tab.title}</p>
-								</li>
+								<a
+									href="#{tab.title}"
+									on:click={() => setActiveLink(tab)}
+									title="Set as active tab"
+								>
+									<li class="flex flex-row mb-2 gap-2 hover:underline underline-offset-4">
+										<img src={tab.faviconUrl} alt="tab favicon" class="w-4 h-4" />
+										<p id={tab.title}>{tab.title}</p>
+									</li>
+								</a>
 							{/each}
 						</ul>
 					{/if}
