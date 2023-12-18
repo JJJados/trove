@@ -54,7 +54,7 @@
 		</div>
 		<TabGroups bind:this={tabGroups} />
 		<div class="flex justify-center px-4 mt-4 mb-2">
-			<a href="https://www.buymeacoffee.com/jlaturnus" target="_blank">
+			<a href="https://www.buymeacoffee.com/jlaturnus" target="_blank" title="Buy me a coffee :)">
 				<svg
 					class="w-28 h-auto fill-black dark:fill-white transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 duration-300"
 					fill="none"
