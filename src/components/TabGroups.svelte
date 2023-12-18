@@ -18,7 +18,6 @@
 
 	async function getGroupsFromStorage() {
 		chrome.storage.sync.get('trove', async (res) => {
-			console.log(res.trove);
 			if (res.trove && !res.trove.resync) {
 				groups = res.trove.groups;
 			} else {
