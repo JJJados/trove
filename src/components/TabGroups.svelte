@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { slide } from 'svelte/transition';
 	import groupBy from '../lib/groupBy';
 	import { type Tab, type TabGroup, TabGroupColours, Colours } from '../types/tabs.type';
 
