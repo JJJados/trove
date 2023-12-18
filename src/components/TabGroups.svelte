@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { MouseEventHandler } from 'svelte/elements';
 	import groupBy from '../lib/groupBy';
 	import { type Tab, type TabGroup, TabGroupColours, Colours } from '../types/tabs.type';
 
@@ -76,9 +75,12 @@
 	getGroupsFromStorage();
 </script>
 
-<div class="my-4">
+<div class="my-4 px-4">
+	{#if groups.length === 0}
+		<h1>No tab groups saved.</h1>
+	{/if}
 	{#each groups as group}
-		<div class="px-4">
+		<div>
 			<button
 				on:click={() => expandTabGroup(group)}
 				class="flex flex-row justify-between {Colours[
@@ -86,20 +88,22 @@
 				]} w-9/12 border rounded-lg border-slate-900 shadow-slate-900 shadow transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 duration-300"
 			>
 				<h2 class="mx-2 font-bold text-slate-900">{group.name}</h2>
-				<h3 class="mx-2 font-bold text-slate-900">{group.tabs.length} tabs</h3>
+				<h3 class="mx-2 font-bold text-slate-900">{group.tabs.length}</h3>
 			</button>
-			<ul class="gap-2 mx-4 my-2">
-				{#key numExpandedGroups}
-					{#each group.tabs as tab}
-						{#if group.expanded}
-							<li class="flex flex-row mb-2 gap-2 underline underline-offset-4">
-								<img src={tab.faviconUrl} alt="tab favicon" class="w-4 h-4" />
-								<p>{tab.title}</p>
-							</li>
-						{/if}
-					{/each}
-				{/key}
-			</ul>
+			{#key numExpandedGroups}
+				<ul class="gap-2 mx-4 my-1">
+					{#if group.expanded}
+						<ul class="gap-2 my-2">
+							{#each group.tabs as tab}
+								<li class="flex flex-row mb-2 gap-2 underline underline-offset-4">
+									<img src={tab.faviconUrl} alt="tab favicon" class="w-4 h-4" />
+									<p>{tab.title}</p>
+								</li>
+							{/each}
+						</ul>
+					{/if}
+				</ul>
+			{/key}
 		</div>
 	{/each}
 </div>
