@@ -5,7 +5,7 @@
 
 <div class="bg-gradient-to-r from-group-purple via-group-blue to-group-green p-[2px]">
 	<div class="flex flex-col w-64 h-auto bg-white text-slate-900 dark:bg-dark dark:text-white py-2">
-		<div class="flex flex-row justify-between px-4">
+		<div class="flex flex-row justify-between px-3">
 			<h1 class="text-xl">trove</h1>
 			<div>
 				<button

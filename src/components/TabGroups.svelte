@@ -82,7 +82,7 @@
 	}
 </script>
 
-<div class="my-4 px-4">
+<div class="my-4 px-3">
 	{#await groupsFromStorage}
 		<h1>Loading...</h1>
 	{/await}
