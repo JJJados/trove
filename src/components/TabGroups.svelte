@@ -6,6 +6,8 @@
 	let numExpandedGroups: number = 0;
 	$: expandedGroups = () => numExpandedGroups;
 
+	let groupsFromStorage: Promise<void> = getGroupsFromStorage();
+
 	chrome.storage.onChanged.addListener((changes, namespace) => {
 		if (changes.trove.newValue) {
 			groups = changes.trove.newValue.groups;
@@ -14,10 +16,13 @@
 		}
 	});
 
-	function getGroupsFromStorage() {
-		chrome.storage.sync.get('trove', (res) => {
-			if (res.trove) {
+	async function getGroupsFromStorage() {
+		chrome.storage.sync.get('trove', async (res) => {
+			console.log(res.trove);
+			if (res.trove && !res.trove.resync) {
 				groups = res.trove.groups;
+			} else {
+				await saveTabGroups();
 			}
 		});
 	}
@@ -31,8 +36,8 @@
 		group.expanded = !group.expanded;
 	}
 
-	function setActiveLink(tab: Tab) {
-		chrome.tabs.update(tab.id, { active: true });
+	async function setActiveLink(tab: Tab) {
+		await chrome.tabs.update(tab.id, { active: true });
 	}
 
 	export async function saveTabGroups() {
@@ -64,9 +69,10 @@
 		}
 
 		groups = newGroups;
-		chrome.storage.sync.set({
+		await chrome.storage.sync.set({
 			trove: {
-				groups: newGroups
+				groups: newGroups,
+				resync: false
 			}
 		});
 	}
@@ -74,11 +80,12 @@
 	export function clearTabGroups() {
 		chrome.storage.sync.clear();
 	}
-
-	getGroupsFromStorage();
 </script>
 
 <div class="my-4 px-4">
+	{#await groupsFromStorage}
+		<h1>Loading...</h1>
+	{/await}
 	{#if groups.length === 0}
 		<h1>No groups saved.</h1>
 	{/if}

@@ -13,10 +13,19 @@ function setupStorage(): Promise<TabGroup[]> {
 			let groups: TabGroup[] = [];
 			if (res.trove) {
 				groups = res.trove.groups;
-			} else {
+				// We need to resync tab ids after startup
 				chrome.storage.sync.set({
 					trove: {
-						groups: []
+						groups: groups,
+						resync: true
+					}
+				});
+			} else {
+				// setup default storage
+				chrome.storage.sync.set({
+					trove: {
+						groups: [],
+						resync: false
 					}
 				});
 			}
