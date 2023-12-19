@@ -17,7 +17,8 @@ function setupStorage(): Promise<TabGroup[]> {
 				chrome.storage.sync.set({
 					trove: {
 						groups: groups,
-						resync: true
+						resync: groups.length > 0 ? true : false,
+						cleared: false
 					}
 				});
 			} else {
@@ -25,7 +26,8 @@ function setupStorage(): Promise<TabGroup[]> {
 				chrome.storage.sync.set({
 					trove: {
 						groups: [],
-						resync: false
+						resync: false,
+						cleared: false
 					}
 				});
 			}
@@ -56,7 +58,7 @@ async function createTabGroups(groups: TabGroup[]) {
 		}
 		let groupId: number = await chrome.tabs.group({ tabIds: tabIds });
 		chrome.tabGroups.update(groupId, {
-			collapsed: false,
+			collapsed: true,
 			title: group.name,
 			color: group.colour
 		});

@@ -18,10 +18,13 @@
 
 	async function getGroupsFromStorage() {
 		chrome.storage.sync.get('trove', async (res) => {
-			if (res.trove && !res.trove.resync) {
-				groups = res.trove.groups;
-			} else {
-				await saveTabGroups();
+			let trove = res.trove;
+			if (trove) {
+				if (trove.cleared || trove.groups.length === 0) {
+					groups = trove.groups;
+				} else if (trove.resync) {
+					await saveTabGroups();
+				}
 			}
 		});
 	}
@@ -71,13 +74,20 @@
 		await chrome.storage.sync.set({
 			trove: {
 				groups: newGroups,
-				resync: false
+				resync: false,
+				cleared: false
 			}
 		});
 	}
 
 	export function clearTabGroups() {
-		chrome.storage.sync.clear();
+		chrome.storage.sync.set({
+			trove: {
+				groups: [],
+				resync: false,
+				cleared: true
+			}
+		});
 	}
 </script>
 
