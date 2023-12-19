@@ -1,12 +1,13 @@
 <script lang="ts">
 	import groupBy from '../lib/groupBy';
+	import { getStorageData, saveGroupsToStorage } from '../lib/storage';
 	import { type Tab, type TabGroup, TabGroupColours, Colours } from '../types/tabs.type';
 
 	let groups: TabGroup[] = [];
 	let numExpandedGroups: number = 0;
 	$: expandedGroups = () => numExpandedGroups;
 
-	let groupsFromStorage: Promise<void> = getGroupsFromStorage();
+	let setupGroups: Promise<void> = setGroups();
 
 	chrome.storage.onChanged.addListener((changes, namespace) => {
 		if (changes.trove.newValue) {
@@ -16,17 +17,20 @@
 		}
 	});
 
-	async function getGroupsFromStorage() {
-		chrome.storage.sync.get('trove', async (res) => {
-			let trove = res.trove;
-			if (trove) {
-				if (trove.cleared || trove.groups.length === 0) {
-					groups = trove.groups;
-				} else if (trove.resync) {
-					await saveTabGroups();
-				}
+	async function setGroups() {
+		let data = await getStorageData();
+		if (data) {
+			groups = data.groups;
+			if (data.cleared || data.groups.length === 0) {
+				groups = data.groups;
+			} else {
+				groups = await saveTabGroups();
 			}
-		});
+		}
+	}
+
+	async function setActiveLink(tab: Tab) {
+		await chrome.tabs.update(tab.id, { active: true });
 	}
 
 	function expandTabGroup(group: TabGroup) {
@@ -38,18 +42,16 @@
 		group.expanded = !group.expanded;
 	}
 
-	async function setActiveLink(tab: Tab) {
-		await chrome.tabs.update(tab.id, { active: true });
-	}
-
-	export async function saveTabGroups() {
+	export async function saveTabGroups(): Promise<TabGroup[]> {
 		let tabs = await chrome.tabs.query({});
-		let groupedTabs = groupBy(tabs, (t) => t.groupId);
-		let newGroups: TabGroup[] = [];
-		for (let groupId in groupedTabs) {
+		let tabsGroupedByGroupId = groupBy(tabs, (t) => t.groupId);
+		let tabGroups: TabGroup[] = [];
+
+		for (let groupId in tabsGroupedByGroupId) {
 			if (groupId === '-1') {
 				continue;
 			}
+
 			let group = await chrome.tabGroups.get(Number(groupId));
 			let tabGroup: TabGroup = {
 				id: group.id,
@@ -57,7 +59,7 @@
 				name: group.title as string,
 				colour: TabGroupColours[group.color],
 				expanded: false,
-				tabs: groupedTabs[groupId].map((t) => {
+				tabs: tabsGroupedByGroupId[groupId].map((t) => {
 					return {
 						id: t.id as number,
 						active: t.active,
@@ -67,17 +69,12 @@
 					};
 				})
 			};
-			newGroups.push(tabGroup);
+
+			tabGroups.push(tabGroup);
 		}
 
-		groups = newGroups;
-		await chrome.storage.sync.set({
-			trove: {
-				groups: newGroups,
-				resync: false,
-				cleared: false
-			}
-		});
+		await saveGroupsToStorage(tabGroups, false, false);
+		return tabGroups;
 	}
 
 	export function clearTabGroups() {
@@ -92,7 +89,7 @@
 </script>
 
 <div class="my-4 px-3">
-	{#await groupsFromStorage}
+	{#await setupGroups}
 		<h1>Loading...</h1>
 	{/await}
 	{#if groups.length === 0}

@@ -1,9 +1,8 @@
 import { type Tab, type TabGroup, TabGroupColours } from '../types/tabs.type';
+import { saveGroupsToStorage } from './storage';
 
 chrome.runtime.onStartup.addListener(async () => {
 	let groups: TabGroup[] = await setupStorage();
-	// need to figure out a way to display these correctly, this works for creating the group
-	// await createDefaultTabGroup();
 	await createTabGroups(groups);
 });
 
@@ -11,32 +10,21 @@ function setupStorage(): Promise<TabGroup[]> {
 	return new Promise((resolve) => {
 		chrome.storage.sync.get('trove', (res) => {
 			let groups: TabGroup[] = [];
+			let shouldResync: boolean = false;
+
 			if (res.trove) {
 				groups = res.trove.groups;
-				// We need to resync tab ids after startup
-				chrome.storage.sync.set({
-					trove: {
-						groups: groups,
-						resync: groups.length > 0 ? true : false,
-						cleared: false
-					}
-				});
-			} else {
-				// setup default storage
-				chrome.storage.sync.set({
-					trove: {
-						groups: [],
-						resync: false,
-						cleared: false
-					}
-				});
+				shouldResync = groups.length > 0 ? true : false;
 			}
+
+			saveGroupsToStorage(groups, shouldResync, false);
 			resolve(groups);
 		});
 	});
 }
 
 // Handles the creation of a new tab group for chrome startup pages
+// Not in use yet...
 async function createDefaultTabGroup() {
 	let tabs = await chrome.tabs.query({});
 	let tabIds: number[] = tabs.map((tab) => tab.id as number);
