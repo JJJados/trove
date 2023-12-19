@@ -9,16 +9,11 @@ export async function getStorageData(): Promise<StorageStructure> {
 	});
 }
 
-export async function saveGroupsToStorage(
-	tabGroups: TabGroup[],
-	resync: boolean,
-	cleared: boolean
-): Promise<void> {
+export async function saveGroupsToStorage(tabGroups: TabGroup[], resync: boolean): Promise<void> {
 	await chrome.storage.sync.set({
 		trove: {
-			groups: tabGroups,
-			resync: resync,
-			cleared: cleared
+			groups: tabGroups.sort((a, b) => (a.tabs.length > b.tabs.length ? -1 : 1)),
+			resync: resync
 		}
 	});
 }

@@ -17,7 +17,7 @@ function setupStorage(): Promise<TabGroup[]> {
 				shouldResync = groups.length > 0 ? true : false;
 			}
 
-			saveGroupsToStorage(groups, shouldResync, false);
+			saveGroupsToStorage(groups, shouldResync);
 			resolve(groups);
 		});
 	});

@@ -21,9 +21,7 @@
 		let data = await getStorageData();
 		if (data) {
 			groups = data.groups;
-			if (data.cleared || data.groups.length === 0) {
-				groups = data.groups;
-			} else {
+			if (data.resync) {
 				groups = await saveTabGroups();
 			}
 		}
@@ -73,7 +71,7 @@
 			tabGroups.push(tabGroup);
 		}
 
-		await saveGroupsToStorage(tabGroups, false, false);
+		await saveGroupsToStorage(tabGroups, false);
 		return tabGroups;
 	}
 
@@ -81,8 +79,7 @@
 		chrome.storage.sync.set({
 			trove: {
 				groups: [],
-				resync: false,
-				cleared: true
+				resync: false
 			}
 		});
 	}
