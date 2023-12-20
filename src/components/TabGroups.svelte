@@ -85,7 +85,7 @@
 	}
 </script>
 
-<div class="my-4 px-3">
+<div class="my-2 px-3">
 	{#await setupGroups}
 		<h1>Loading...</h1>
 	{/await}

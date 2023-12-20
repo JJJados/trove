@@ -1,13 +1,18 @@
 {
-    "name": "trove",
-    "description": "tab manager",
+    "name": "Trove",
+    "description": "Store your tab groups, effortlessly.",
     "version": "1.0",
     "manifest_version": 3,
     "action": {
       "default_popup": "src/index.html"
     },
     "background": {
-        "service_worker": "src/lib/background.ts"
+      "service_worker": "src/lib/background.ts"
+    },
+    "icons": {
+      "16": "trove-logo-16.png",
+      "48": "trove-logo-48.png",
+      "128": "trove-logo-128.png"
     },
     "permissions": ["offscreen", "storage", "tabs", "tabGroups"]
   }
