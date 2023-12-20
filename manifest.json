@@ -14,5 +14,5 @@
       "48": "trove-logo-48.png",
       "128": "trove-logo-128.png"
     },
-    "permissions": ["offscreen", "storage", "tabs", "tabGroups"]
+    "permissions": ["storage", "tabs", "tabGroups"]
   }
