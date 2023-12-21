@@ -96,7 +96,7 @@
 		<div class="flex flex-col">
 			<button
 				on:click={() => expandTabGroup(group)}
-				title="{group.name} - {group.tabs.length} tab(s)"
+				title="Expand/collapse"
 				class="flex flex-row justify-between {Colours[
 					group.colour
 				]} w-full border rounded-lg border-slate-900 shadow-slate-900 shadow transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 duration-300"
