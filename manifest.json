@@ -1,7 +1,7 @@
 {
     "name": "Trove",
-    "description": "Store your tab groups, effortlessly.",
-    "version": "1.0",
+    "description": "A delightfully simple Chrome extension that can effortlessly save, sync, and reopen your tab groups upon startup.",
+    "version": "1.0.1",
     "manifest_version": 3,
     "action": {
       "default_popup": "src/index.html"
