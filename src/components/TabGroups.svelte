@@ -56,7 +56,7 @@
 				collapsed: group.collapsed,
 				name: group.title as string,
 				colour: TabGroupColours[group.color],
-				expanded: false,
+				expanded: true,
 				tabs: tabsGroupedByGroupId[groupId].map((t) => {
 					return {
 						id: t.id as number,
@@ -85,7 +85,7 @@
 	}
 </script>
 
-<div class="my-2 px-3">
+<div class="my-2 px-3 rounded py-2 mx-1">
 	{#await setupGroups}
 		<h1>Loading...</h1>
 	{/await}
@@ -93,9 +93,10 @@
 		<h1>No groups saved.</h1>
 	{/if}
 	{#each groups as group}
-		<div>
+		<div class="flex flex-col">
 			<button
 				on:click={() => expandTabGroup(group)}
+				title="{group.name} - {group.tabs.length} tab(s)"
 				class="flex flex-row justify-between {Colours[
 					group.colour
 				]} w-full border rounded-lg border-slate-900 shadow-slate-900 shadow transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 duration-300"
